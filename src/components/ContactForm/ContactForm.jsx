@@ -1,66 +1,63 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import css from "./ContactForm.module.css";
-import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsOps";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+//import { nanoid } from "nanoid";
+import * as Yup from "yup";
 
-const MAX_CHAR_NAME_VALIDATION = 50;
-const MIN_CHAR_NAME_VALIDATION = 3;
+import css from "./ContactForm.module.css";
+import { addContact } from "../../redux/contacts/operations";
 
-const contactFormSchema = Yup.object().shape({
-  name: Yup.string()
-    .required("Required!")
-    .max(MAX_CHAR_NAME_VALIDATION, `Too long!`)
-    .min(MIN_CHAR_NAME_VALIDATION, `Too short!`),
-  number: Yup.string()
-    .required("Required!")
-    .matches("^\\d{3}-\\d{2}-\\d{2}$", "Number format 111-11-11"),
-});
-
-const FORM_INITIAL_VALUES = {
+const INITIAL_VALUES = {
   name: "",
   number: "",
 };
 
+const MAX_SYMBOL = 50;
+const MIN_SYMBOL = 3;
+
+const contactsValidationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(MIN_SYMBOL, "Too Short!")
+    .max(MAX_SYMBOL, "Too Long!")
+    .required("Required"),
+  number: Yup.string()
+    .min(MIN_SYMBOL, "Too Short!")
+    .max(MAX_SYMBOL, "Too Long!")
+    .required("Required"),
+});
+
 const ContactForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = (values, actions) => {
-    dispatch(addContact(values));
+  const onAddContacts = (data) => {
+    // const newContact = {
+    // 	...data,
+    // };
+    dispatch(addContact(data));
+  };
 
+  const handleSubmit = (values, actions) => {
+    onAddContacts(values);
     actions.resetForm();
   };
 
   return (
     <Formik
-      initialValues={FORM_INITIAL_VALUES}
-      validationSchema={contactFormSchema}
+      initialValues={INITIAL_VALUES}
       onSubmit={handleSubmit}
+      validationSchema={contactsValidationSchema}
     >
       <Form className={css.form}>
-        <label>
-          <span>Name</span>
-          <br />
-          <Field className={css.field} type="text" name="name" />
-          <ErrorMessage
-            className={css.errorMessage}
-            component="p"
-            name="name"
-          />
-          <br />
+        <label className={css.formLabel}>
+          Name
+          <Field type="text" name="name" />
+          <ErrorMessage component="p" name="name" />
         </label>
-        <label>
-          <span>Number</span>
-          <br />
-          <Field className={css.field} type="text" name="number" />
-          <ErrorMessage
-            className={css.errorMessage}
-            component="p"
-            name="number"
-          />
-          <br />
+        <label className={css.formLabel}>
+          Number
+          <Field type="tel" name="number" />
+          <ErrorMessage component="p" name="number" />
         </label>
-        <button className={css.formBtn} type="submit">
+        <button className={css.btnForm} type="submit">
           Add contact
         </button>
       </Form>

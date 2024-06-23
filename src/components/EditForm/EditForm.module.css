@@ -42,3 +42,9 @@
   border-color: black;
   outline: none;
 }
+
+.button_container {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}

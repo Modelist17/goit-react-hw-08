@@ -1,45 +1,50 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { apiGetContacts } from "../../redux/contacts2/slice";
-import { selectPhonebookIsLoading } from "../../redux/contacts2/selectors";
-import Loader from "../../components/Loader/Loader";
-import AddContactForm from "../../components/AddContactForm/AddContactForm";
-import SearchBox from "../../components/SearchBox/SearchBox";
 import ContactList from "../../components/ContactList/ContactList";
+import SearchBox from "../../components/SearchBox/SearchBox";
+import ContactForm from "../../components/ContactForm/ContactForm";
+import { fetchContacts } from "../../redux/contacts/operations";
+import Loader from "../../components/Loader/Loader";
+import PageTitle from "../../components/PageTitle/PageTitle";
+import ConfirmModal from "../../components/ModalWindow/ConfirmModal";
+import { Toaster } from "react-hot-toast";
+import EditForm from "../../components/EditForm/EditForm";
 
-const ContactsPage = () => {
+export default function ContactPage() {
   const dispatch = useDispatch();
-
-  const isLoading = useSelector(selectPhonebookIsLoading);
-  
+  const isLoading = useSelector((state) => state.contacts.loading);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentContact, setCurrentContact] = useState(null);
 
   useEffect(() => {
-    dispatch(apiGetContacts());
+    dispatch(fetchContacts());
   }, [dispatch]);
+
+  const handleEdit = (contact) => {
+    setCurrentContact(contact);
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setCurrentContact(null);
+    setIsEditing(false);
+  };
 
   return (
     <div>
-      <AddContactForm />
+      <PageTitle>Your contacts</PageTitle>
+      <Toaster position="top-center" reverseOrder={false} />
       <SearchBox />
+
+      {isEditing ? (
+        <EditForm contact={currentContact} onClose={handleCancelEdit} />
+      ) : (
+        <ContactForm />
+      )}
+
       {isLoading && <Loader />}
-      <ContactList />
-      {/* <ul>
-				{Array.isArray(contacts) && contacts.length === 0 && (
-					<li>No contacts</li>
-				)}
-				{Array.isArray(contacts) &&
-					contacts.map(contact => (
-						<li key={contact.id}>
-							<h3>Name: {contact.name}</h3>
-							<p>Number: {contact.number}</p>
-							<button onClick={() => onDeleteContact(contact.id)} type="button">
-								Delete
-							</button>
-						</li>
-					))}
-			</ul> */}
+      <ContactList onEdit={handleEdit} />
+      <ConfirmModal />
     </div>
   );
-};
-
-export default ContactsPage;
+}

@@ -1,45 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserData } from "../../redux/auth/selectors";
-import { useState } from "react";
-import { logout } from "../../redux/auth/operations";
+import { selectUser } from "../../redux/auth/selectors";
+import { logOut } from "../../redux/auth/operations";
+import css from "./UserMenu.module.css";
 
-const UserMenu = () => {
+export default function UserMenu() {
   const dispatch = useDispatch();
-  const userData = useSelector(selectUserData);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const onCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const onOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const onLogout = () => {
-    dispatch(logout());
-    onCloseModal();
-  };
+  const user = useSelector(selectUser);
 
   return (
-    <div>
-      <span>Hi, {userData.name}</span>
-      <button onClick={onOpenModal} type="button">
+    <div className={css.wrapper}>
+      <p className={css.username}>Welcome, {user.name}</p>
+      <button type="button" onClick={() => dispatch(logOut())}>
         Logout
       </button>
-      {isModalOpen && (
-        <div>
-          <h3>Log out?</h3>
-          <button type="button" onClick={onLogout}>
-            Yes
-          </button>
-          <button type="button" onClick={onCloseModal}>
-            No
-          </button>
-        </div>
-      )}
     </div>
   );
-};
-
-export default UserMenu;
+}

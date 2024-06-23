@@ -1,53 +1,56 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  addContacts,
-  deleteContactsById,
-  requestContacts,
-} from "../../api/api";
+import axios from 'axios';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-export const initialState = {
-  contacts: {
-    items: [],
-    loading: false,
-    error: null,
-  },
-  filters: {
-    name: "",
-  },
-};
-// apiRequestContacts
+axios.defaults.baseURL = 'https://connections-api.herokuapp.com/';
+
+// Kontakten
 export const fetchContacts = createAsyncThunk(
-  "contacts/fetchAll",
-  async (contactId, thinkApi) => {
+  'contacts/fetchAll',
+  async (_, thunkAPI) => {
     try {
-      const data = await requestContacts(contactId);
-      return data;
+      const response = await axios.get('/contacts');
+      return response.data;
     } catch (error) {
-      return thinkApi.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
-// apiAddContacts
+
+// Kontakten + post
 export const addContact = createAsyncThunk(
-  "contacts/addContact",
-  async (contact, thinkApi) => {
+  'contacts/addContact',
+  async (newContact, thunkAPI) => {
     try {
-      const data = await addContacts(contact);
-      return data;
+      const response = await axios.post('/contacts', newContact);
+      return response.data;
     } catch (error) {
-      return thinkApi.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
-// apiDeleteContacts
+
+/// Kontakten + id
 export const deleteContact = createAsyncThunk(
-  "contacts/deleteContacts",
-  async (contactId, thinkApi) => {
+  'contacts/deleteContact',
+  async (contactId, thunkAPI) => {
     try {
-      const data = await deleteContactsById(contactId);
-      return data;
+      const response = await axios.delete(`/contacts/${contactId}`);
+      return response.data;
     } catch (error) {
-      return thinkApi.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+
+export const updateContact = createAsyncThunk(
+  'contacts/updateContact',
+  async ({ id, name, number }, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/contacts/${id}`, { name, number });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );

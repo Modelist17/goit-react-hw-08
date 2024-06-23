@@ -1,9 +1,9 @@
 import { useId } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import css from "../ContactForm/ContactForm.module.css";
-import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contacts/operations";
+import css from "../EditForm/EditForm.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContact } from "../../redux/contacts/operations";
 import toast from "react-hot-toast";
 
 const ContactSchema = Yup.object().shape({
@@ -17,30 +17,31 @@ const ContactSchema = Yup.object().shape({
     .required("Required"),
 });
 
-export default function ContactForm() {
+export default function EditForm({ contact: { id, name, number }, onClose }) {
   const dispatch = useDispatch();
   const fieldId = useId();
 
-  const handleSubmit = (values, actions) => {
-    dispatch(addContact(values))
+  const handleUpdate = (values, actions) => {
+    const { name, number } = values;
+    dispatch(updateContact({ id, name, number }))
       .unwrap()
       .then(() => {
-        toast.success("Successfully added!");
+        toast.success("Successfully updated!");
       })
       .catch(() => {
         toast.error("This didn't work.");
       });
-
     actions.resetForm();
+    onClose();
   };
 
   return (
     <Formik
       initialValues={{
-        name: "",
-        number: "",
+        name: name || "",
+        number: number || "",
       }}
-      onSubmit={handleSubmit}
+      onSubmit={handleUpdate}
       validationSchema={ContactSchema}
     >
       <Form className={css.form}>
@@ -64,9 +65,14 @@ export default function ContactForm() {
           />
           <ErrorMessage name="number" component="span" />
         </div>
-        <button className={css.addCntBtn} type="submit">
-          Add contact
-        </button>
+        <div className={css.button_container}>
+          <button className={css.addCntBtn} type="submit">
+            Save
+          </button>
+          <button className={css.addCntBtn} type="button" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
       </Form>
     </Formik>
   );

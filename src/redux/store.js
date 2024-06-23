@@ -10,10 +10,10 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { filterReducer } from "./filters/slice";
-import { contactReducer } from "./contacts/slice";
 import { authReducer } from "./auth/slice";
-import { phonebookReducer } from "./contacts2/slice";
+import { contactsReducer } from "./contacts/slice";
+import { filtersReducer } from "./filters/slice";
+import { modalReducer } from "./modal/slice";
 
 const authPersistConfig = {
   key: "auth",
@@ -21,12 +21,14 @@ const authPersistConfig = {
   whitelist: ["token"],
 };
 
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+
 export const store = configureStore({
   reducer: {
-    contacts: contactReducer,
-    phonebook: phonebookReducer,
-    filters: filterReducer,
-    auth: persistReducer(authPersistConfig, authReducer),
+    auth: persistedAuthReducer,
+    contacts: contactsReducer,
+    filters: filtersReducer,
+    modal: modalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

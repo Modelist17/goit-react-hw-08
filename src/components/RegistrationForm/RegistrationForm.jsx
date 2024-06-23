@@ -39,3 +39,11 @@ export default function RegistrationForm() {
     </Formik>
   );
 }
+
+// Adolf
+// painter@mail.com
+// painter@mail.com
+
+// Otto Scorceni
+// scorceni2@mail.com
+// scorceni2@mail.com

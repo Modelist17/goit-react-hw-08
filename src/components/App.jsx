@@ -1,4 +1,4 @@
-import css from './App.module.css';  //<- why is that so?
+import css from "./App.module.css"; //- not working
 import { lazy, Suspense, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Layout from "./Layout/Layout";
@@ -33,25 +33,19 @@ export default function App() {
           <Route
             path="/register"
             element={
-              <RestrictedRoute
-                component={<RegistrationPage />}
-                redirectTo="/"
-              />
+              <RestrictedRoute component={RegistrationPage} redirectTo="/" />
             }
           />
           <Route
             path="/login"
             element={
-              <RestrictedRoute
-                component={<LoginPage />}
-                redirectTo="/contacts"
-              />
+              <RestrictedRoute component={LoginPage} redirectTo="/contacts" />
             }
           />
           <Route
             path="/contacts"
             element={
-              <PrivateRoute component={<ContactsPage />} redirectTo="/login" />
+              <PrivateRoute component={ContactsPage} redirectTo="/login" />
             }
           />
         </Routes>

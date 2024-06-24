@@ -41,8 +41,8 @@ export default function RegistrationForm() {
 }
 
 // Adolf
-// painter@mail.com
-// painter@mail.com
+// thepainter@mail.com
+// thepainter@mail.com
 
 // Otto Scorceni
 // scorceni2@mail.com
